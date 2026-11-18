@@ -7,3 +7,11 @@ STATIONS = {
 YEARS = [2020, 2021, 2022, 2023, 2024, 2025]
 
 SUMMER_MONTHS = [5, 6, 7, 8, 9]
+
+#every faulty case (Bucharest 2024, Cluj 2024, Cluj 2025) is in the 2024–2025 data,
+# which Romania delivered to the EEA in one batch on 27 August 2026. It’s all marked “verified”,
+# but that batch looks less reliable than earlier years.
+
+EXCLUSION_TABLE_MDA_AVERAGE = [('RO0065A', 2024), ('RO0071A', 2024), ('RO0075A', 2024)]
+
+MIN_MDA_VALIDITY = 0.75

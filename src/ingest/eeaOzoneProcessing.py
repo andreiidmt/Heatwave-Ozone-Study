@@ -36,12 +36,35 @@ if __name__ == '__main__':
         #Just as a safety net, in case the file simply didn't have the row for an hour.
         v = v.asfreq('h')
 
-        results.append(MDA8(v).rename(df['Samplingpoint'].iloc[0]))
+        #Keep the name of the columns as just the stations name
+        results.append(MDA8(v).rename(file.stem.split('-')[1][:7]))
 
+    #Put the result as a table
     table = pd.concat(results, axis = 1, sort=False)
+
+    #Filter the years
     table = table[table.index.year.isin(cfg.YEARS)]
+
+    #Filter the months
     table = table[table.index.month.isin(cfg.SUMMER_MONTHS)]
-    print(table)
+
+
+    #For those stations that have weird values (were delivered in the 27 August 2026 Batch), set the
+    #values to NaN
+    for station, year in cfg.EXCLUSION_TABLE_MDA_AVERAGE:
+        table.loc[table.index.year == year, station] = float('NaN')
+
+    #See how much of the summer days are valid, and then set those who aren't valid to NaN
+    coverage = table.notna().groupby(table.index.year).mean()
+    for year in cfg.YEARS:
+        for column in coverage.columns:
+            if coverage.loc[year, column] < cfg.MIN_MDA_VALIDITY:
+                table.loc[table.index.year == year, column] = float('NaN')
+
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_file = OUT_DIR / 'eeaOzoneMeasurements.parquet'
+    table.to_parquet(out_file)
 
 
 
