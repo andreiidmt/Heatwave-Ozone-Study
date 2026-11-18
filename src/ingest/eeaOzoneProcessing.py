@@ -9,8 +9,9 @@ def MDA8(hourly: pd.Series) -> pd.Series:
     """
         Daily maximum 8-hour mean ozone (MDA8) for a single station.
 
-        hourly: valid hourly ozone entries, index = Start time, sorted
-        returns: one value per calendar day, representing the MDA8
+        hourly: complete hourly series (index = Start time, UTC), NaN for invalid hours
+        returns: daily MDA8; NaN if a day has fewer than 18 valid 8-hour means
+                    (an 8-hour mean needs at least 6 valid hours)
     """
 
     run8 = hourly.rolling('8h', min_periods=6).mean()
@@ -61,10 +62,26 @@ if __name__ == '__main__':
             if coverage.loc[year, column] < cfg.MIN_MDA_VALIDITY:
                 table.loc[table.index.year == year, column] = float('NaN')
 
+    station_to_city = {station: city for city, stations in cfg.STATIONS.items() for station in stations}
 
+    #Reformat the table so each row represents the mda8 value for a station on a specific day.
+    long = table.stack().rename("mda8").reset_index()
+
+    #Do not keep invalid measurements
+    long = long.dropna(subset=['mda8'])
+
+    long = long.rename(columns={'Start': 'date', 'level_1': 'station'})
+
+    #Map each station to a city
+    long['city'] = long['station'].map(station_to_city)
+
+    #Though not useful now, we will do a comparison with CAMS, and that will help us then.
+    long['source'] = 'station'
+
+    print(long)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_file = OUT_DIR / 'eeaOzoneMeasurements.parquet'
-    table.to_parquet(out_file)
+    long.to_parquet(out_file, index=False)
 
 
 
