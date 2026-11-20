@@ -21,3 +21,14 @@ CITIES_COORDINATES = {
     "cluj": {"lat": 46.77, "lon": 23.60},
     "bucharest": {"lat": 44.43, "lon": 26.10},
 }
+
+#For defining a heatwave, we'll look at the data from 1991 to 2020,
+# using the Perkins & Alexander (2013), “CTX90pct” standard:
+# - a heatwave must exceed the calendar-day 90th percentile for at least 3 consecutive days
+# - the threshold for a given calendar day is calculated using a 15-day window centered on that day
+
+
+BASELINE_CLIMATE = (1991,2020)
+HEATWAVE_PERCENTILE = 90
+HEATWAVE_WINDOW_DAYS = 15
+HEATWAVE_MIN_DAYS = 3
