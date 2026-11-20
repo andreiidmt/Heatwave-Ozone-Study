@@ -22,5 +22,5 @@ for file in RAW_DIR.iterdir():
 bigTable = pd.concat(dataFrameList, ignore_index=True)
 bigTable = bigTable.rename(columns={'time': 'date', 'temperature_2m_max': 'tmax'})
 bigTable = bigTable[['city', 'date', 'tmax']]
-bigTable.to_parquet(PRO_DIR / 'openMeteoTemperatures.parquet')
+bigTable.to_parquet(PRO_DIR / 'openMeteoTemperatures.parquet', index=False)
 print(bigTable)
