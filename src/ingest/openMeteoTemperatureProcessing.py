@@ -11,7 +11,9 @@ PRO_DIR.mkdir(parents=True, exist_ok=True)
 dataFrameList = []
 
 for file in RAW_DIR.iterdir():
+    #Load the JSON file with utf-8 to avoid breaking symbol for Celsius.
     data = json.loads(file.read_text(encoding='utf-8'))
+    #Convert to actual datetime
     data['daily']['time'] = pd.to_datetime(data['daily']['time'])
     data['daily']['city'] = file.stem
     df = pd.DataFrame(data['daily'])
