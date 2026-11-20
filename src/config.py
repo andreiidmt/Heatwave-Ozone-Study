@@ -14,4 +14,10 @@ SUMMER_MONTHS = [5, 6, 7, 8, 9]
 
 EXCLUSION_TABLE_MDA_AVERAGE = [('RO0065A', 2024), ('RO0071A', 2024), ('RO0075A', 2024)]
 
+#Exclude summers with a MDA8 mean of less than 75%
 MIN_MDA_VALIDITY = 0.75
+
+CITIES_COORDINATES = {
+    "cluj": {"lat": 46.77, "lon": 23.60},
+    "bucharest": {"lat": 44.43, "lon": 26.10},
+}
