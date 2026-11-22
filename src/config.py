@@ -14,7 +14,7 @@ SUMMER_MONTHS = [5, 6, 7, 8, 9]
 
 EXCLUSION_TABLE_MDA_AVERAGE = [('RO0065A', 2024), ('RO0071A', 2024), ('RO0075A', 2024)]
 
-#Exclude summers with a MDA8 mean of less than 75%
+#Exclude summers with a MDA8 share of valid days of less than 75%
 MIN_MDA_VALIDITY = 0.75
 
 CITIES_COORDINATES = {
@@ -32,3 +32,12 @@ BASELINE_CLIMATE = (1991,2020)
 HEATWAVE_PERCENTILE = 90
 HEATWAVE_WINDOW_DAYS = 15
 HEATWAVE_MIN_DAYS = 3
+
+STATIONS_COORDINATES = {
+    "RO0065A": {"lat": 44.4473, "lon": 26.0367},
+    "RO0071A": {"lat": 44.3492, "lon": 26.0308},
+    "RO0229A": {"lat": 44.4917, "lon": 26.0307},
+    "RO0074A": {"lat": 46.7750, "lon": 23.5966},
+    "RO0075A": {"lat": 46.7654, "lon": 23.5503},
+    "RO0232A": {"lat": 46.8439, "lon": 23.7758},
+}
