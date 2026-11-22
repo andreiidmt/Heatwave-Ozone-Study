@@ -12,8 +12,11 @@ SUMMER_MONTHS = [5, 6, 7, 8, 9]
 # which Romania delivered to the EEA in one batch on 27 August 2026. It’s all marked “verified”,
 # but that batch looks less reliable than earlier years.
 
-EXCLUSION_TABLE_MDA_AVERAGE = [('RO0065A', 2024), ('RO0071A', 2024), ('RO0075A', 2024)]
-
+EXCLUDED_STATION_SUMMERS = {
+    ("RO0065A", 2024): "reads ~25-30 µg/m³ low vs RO0229A and RO0072A; ~10 µg/m³ late Sep",
+    ("RO0071A", 2024): "reads ~40-60 µg/m³ low May-Jul; poor agreement with other stations",
+    ("RO0075A", 2024): "reads ~50 µg/m³ low vs RO0232A Jun-Jul",
+}
 #Exclude summers with a MDA8 share of valid days of less than 75%
 MIN_MDA_VALIDITY = 0.75
 

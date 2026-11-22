@@ -49,18 +49,8 @@ if __name__ == '__main__':
     #Filter the months
     table = table[table.index.month.isin(cfg.SUMMER_MONTHS)]
 
-
-    #For those stations that have weird values (were delivered in the 27 August 2026 Batch), set the
-    #values to NaN
-    for station, year in cfg.EXCLUSION_TABLE_MDA_AVERAGE:
-        table.loc[table.index.year == year, station] = float('NaN')
-
-    #See how much of the summer days are valid, and then set those who aren't valid to NaN
+    #See how much of the summer days are valid
     coverage = table.notna().groupby(table.index.year).mean()
-    for year in cfg.YEARS:
-        for column in coverage.columns:
-            if coverage.loc[year, column] < cfg.MIN_MDA_VALIDITY:
-                table.loc[table.index.year == year, column] = float('NaN')
 
     station_to_city = {station: city for city, stations in cfg.STATIONS.items() for station in stations}
 
@@ -78,7 +68,20 @@ if __name__ == '__main__':
     #Though not useful now, we will do a comparison with CAMS, and that will help us then.
     long['source'] = 'station'
 
-    print(long)
+    long['year'] = long['date'].dt.year
+
+    cov_long = coverage.stack().rename('coverage').reset_index()
+    cov_long = cov_long.rename(columns={'Start': 'year', 'level_1': 'station'})
+
+    long =  long.merge(cov_long, on=['station', 'year'])
+    long['reason'] = 'ok'
+    long.loc[long['coverage'] < cfg.MIN_MDA_VALIDITY, 'reason'] = 'coverage below 75%'
+
+    for (station, year), why in cfg.EXCLUDED_STATION_SUMMERS.items():
+        rows = (long['station'] == station) & (long['year'] == year)
+        long.loc[rows, 'reason'] = 'excluded: ' + why
+
+    long['kept'] = long['reason'] == 'ok'
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_file = OUT_DIR / 'eeaOzoneMeasurements.parquet'
     long.to_parquet(out_file, index=False)
